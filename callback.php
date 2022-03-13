@@ -24,7 +24,7 @@ if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["mercha
             # [merchant_id]     ->  string | Müşteri ID                           #
             # [amount]          ->  int    | Ödeme Miktarı                        #
             # [ExtraInfo]       ->  string | Kullanıcı Adı veya herhangi bir veri #
-            # [hash]            -> string  | Kontrol amaçlı şifrelenmiş özel veri #
+            # [hash]            ->  string | Kontrol amaçlı şifrelenmiş özel veri #
             #######################################################################
 
 
