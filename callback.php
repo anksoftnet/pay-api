@@ -1,19 +1,19 @@
-<?php 
+<?php
 $merchantId = '';            // https://www.anksoft.net/odemeapi.php -> Satış Ortaklığı ID'si
 $merchantPassword = '';      // https://www.anksoft.net/odemeapi.php -> Satış Ortaklığı Parolası
 
-if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["merchant_id"]) && isset($_POST['hash']) && isset($_POST['amount']) && isset($_POST['full_name'])) { // Gelen dataları kontrol ediyoruz.
+if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["merchant_id"]) && isset($_POST['hash']) && isset($_POST['amount']) && isset($_POST['full_name'])) { // Callback ile gelen değerleri kontrol ediyoruz. 
 
-    $hash = base64_encode(hash_hmac('sha256', true.post('order_id').$merchantId, $merchantPassword, true)); // Gelen Dataları şifreleyiyoruz.
+    $hash = base64_encode(hash_hmac('sha256', true . ('order_id') . $merchantId, $merchantPassword, true));
 
-    if (post("hash") == $hash) { // Kontrol ettiriyoruz doğruysa devam ediyoruz.
-        if ($_POST["status"] == true) { // Eğer ödeme başarılı ise kredi verme işlemlerine geçiyoruz.
+    if (post("hash") == $hash) {    // Gelen hash değeri ile oluşturduğumuz hash değerini karşılaştırıyoruz.
+        if ($_POST["status"] == true) {  // Ödeme başarılı ise devam ediyoruz. 
 
-            $paymentData = post("merchant_oid");
-            $transID = post("order_id");
-            $method = "credit_card";
-            $credit = post("amount");
-            $username = post("ExtraInfo");
+            $paymentData = post("merchant_oid"); // Ödeme Yapan Kullanıcının Kullanıcı Adı
+            $transID = post("order_id"); // Bu değer benzersiz olmalıdır. 
+            $method = "credit_card"; // Ödeme methodu 
+            $credit = post("amount"); // Kullanıcının ödediği tutarı alıyoruz. 
+            $username = post("ExtraInfo"); // Kullanıcı adı veya herhangi bir şey göndermiş olabilirsiniz.
 
             #######################################################################
             #  CALLBACK PARAMETRE ÖRNEKLERİ                                       #
@@ -27,19 +27,17 @@ if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["mercha
             # [hash]            ->  string | Kontrol amaçlı şifrelenmiş özel veri #
             #######################################################################
 
+            // Ödeme başarılı ise kredi verme işlemlerini yapabilirsiniz.
+            // Örnek olarak verdiğimiz kodlar ile kredi verme işlemlerini yapabilirsiniz.
+            // Bu kodlar sadece örnek amaçlıdır. Kendi sistemlerinize göre düzenleyebilirsiniz.
 
+            echo "OK"; // Bu kodu silmeyiniz. Bu kodu silerseniz ödeme işlemi başarısız olarak işaretlenir.
+        } else {  // Ödeme başarısız ise devam ediyoruz. 
             echo "OK";
-        } else {
-            echo "OK";
-            //die("Ödeme işlemi iptal edildi!");
         }
-    } else {
+    } else {  // Hash değerleri eşleşmiyorsa devam ediyoruz.
         echo "OK";
-        //die("Ödeme işlemi güvenlik kontrolünden geçemedi!");
     }
-} else {
+} else { // Callback ile gelen değerler eksik ise devam ediyoruz. 
     echo "OK";
-    // die("Ödeme verileri hatalı!");
 }
-
-?>

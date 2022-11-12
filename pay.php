@@ -1,4 +1,5 @@
 <?php
+
     $merchantId = '';            // https://www.anksoft.net/odemeapi.php -> Satış Ortaklığı Merchant ID'si
     $merchantPassword = '';      // https://www.anksoft.net/odemeapi.php -> Satış Ortaklığı merchantPassword
 
@@ -16,7 +17,7 @@
     $orderId = '';               // Benzersiz Sipariş ID'si
     $method = '';                // Ödeme Methodu -> (credit)
 
-    $postFields = array(
+    $postFields = array( 
         "merchantId" => $merchantId,
         "merchantPassword" => $merchantPassword,
         'amount' => $Amount,
@@ -29,28 +30,26 @@
         'fail_url' => $FailUrl,
         'callback_url' => $callback_url,
         'method' => $method,
-        'ExtraInfo' => $ExtraInfo
+        'ExtraInfo' => $ExtraInfo 
     );
-    
+
     $curls=curl_init();
-    curl_setopt($curls, CURLOPT_URL, 'https://www.anksoft.net/odeme/payment.php'); // AnkSOFT API Sistemine Curl Gönderiyoruz.
+    curl_setopt($curls, CURLOPT_URL, 'https://www.anksoft.net/odeme/payment.php'); 
     curl_setopt($curls, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curls, CURLOPT_POST, true) ;
-    curl_setopt($curls, CURLOPT_POSTFIELDS, $postFields); // Ödeme yapan kullanıcıdan aldığımız değerleri paylaşıyoruz.
+    curl_setopt($curls, CURLOPT_POSTFIELDS, $postFields); 
     curl_setopt($curls, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($curls, CURLOPT_SSL_VERIFYHOST, 0);
     curl_setopt($curls, CURLOPT_FRESH_CONNECT, true);
-    if(curl_errno($curls))
-        die('ANKSOFT IFRAME connection error. err:'.curl_error($curls));
-    
-    $results = curl_exec($curls);
-    curl_close ($curls);    
-    $result = json_decode($sonucs);
-    
-    if ($result->status == true) {
-        header('Location: '.$result->link);
-    } else {
-        die('Hata!');
+    curl_setopt($curls, CURLOPT_TIMEOUT, 30);
+    curl_setopt($curls, CURLOPT_CONNECTTIMEOUT, 30);
+    $result = curl_exec($curls);
+    curl_close($curls);
+    $result = json_decode($result, true);
+    if($result['status'] == 'success'){
+        header('Location: '.$result['url']);
+    }else{
+        echo $result['message'];
     }
 
 ?>
