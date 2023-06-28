@@ -47,7 +47,7 @@
     curl_close($curls);
     $result = json_decode($result, true);
     if($result['status'] == 'success'){
-        header('Location: '.$result['url']);
+        header('Location: '.$result['link']);
     }else{
         echo $result['message'];
     }

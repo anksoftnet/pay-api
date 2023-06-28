@@ -4,7 +4,7 @@ $merchantPassword = '';      // https://www.anksoft.net/odemeapi.php -> Satış 
 
 if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["merchant_id"]) && isset($_POST['hash']) && isset($_POST['amount']) && isset($_POST['full_name'])) { // Callback ile gelen değerleri kontrol ediyoruz. 
 
-    $hash = base64_encode(hash_hmac('sha256', true . ('order_id') . $merchantId, $merchantPassword, true));
+    $hash = base64_encode(hash_hmac('sha256', 'true' .('order_id') . $merchantId, $merchantPassword, true));
 
     if (post("hash") == $hash) {    // Gelen hash değeri ile oluşturduğumuz hash değerini karşılaştırıyoruz.
         if ($_POST["status"] == true) {  // Ödeme başarılı ise devam ediyoruz. 
