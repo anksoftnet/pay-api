@@ -1,51 +1,51 @@
 <?php
-$merchantId = '';           // Satış Ortaklığı ID'si (https://www.anksoft.net/odemeapi.php'den alınabilir)
-$merchantPassword = '';     // Satış Ortaklığı Parolası (https://www.anksoft.net/odemeapi.php'den alınabilir)
+$merchantId = '';           // Merchant ID (can be obtained from https://www.anksoft.net/odemeapi.php)
+$merchantPassword = '';     // Merchant Password (can be obtained from https://www.anksoft.net/odemeapi.php)
 
-// Gelen POST isteği parametrelerini kontrol ediyoruz
+// Check incoming POST request parameters
 if (isset($_POST["status"]) && isset($_POST["order_id"]) && isset($_POST["merchant_id"]) && isset($_POST['hash']) && isset($_POST['amount']) && isset($_POST['full_name'])) {
 
-    // Gelen parametrelerle hash değerini oluşturuyoruz
+    // Create hash value with incoming parameters
     $hash = base64_encode(hash_hmac('sha256', 'true' . $_POST['order_id'] . $merchantId, $merchantPassword, true));
 
-    // Gelen hash değerini oluşturduğumuz hash ile karşılaştırıyoruz
+    // Compare the incoming hash value with the one we created
     if ($_POST["hash"] == $hash) {
 
-        // Ödeme başarılıysa devam ediyoruz
+        // If payment is successful, continue
         if ($_POST["status"] == true) {
 
-            // Gerekli ödeme verilerini alıyoruz
-            $paymentData = $_POST["full_name"];    // Ödeme yapan kullanıcının tam adı
-            $transID = $_POST["order_id"];         // Benzersiz sipariş numarası
-            $method = "credit_card";                // Ödeme yöntemi
-            $credit = $_POST["amount"];            // Ödenen miktar
-            $username = $_POST["ExtraInfo"];       // Kullanıcı adı veya diğer ekstra bilgiler
+            // Get required payment data
+            $paymentData = $_POST["full_name"];    // Full name of the payer
+            $transID = $_POST["order_id"];         // Unique order number
+            $method = "credit_card";               // Payment method
+            $credit = $_POST["amount"];            // Paid amount
+            $username = $_POST["ExtraInfo"];       // Username or other extra info
 
             #######################################################################
-            #  CALLBACK PARAMETRE ÖRNEKLERİ                                       #
-            #  BU SAYFAYA POST METHODU İLE GELECEK VERİLER AŞAĞIDA BELİRTİLMİŞTİR #
+            #  CALLBACK PARAMETER EXAMPLES                                        #
+            #  THE DATA THAT WILL BE SENT TO THIS PAGE VIA POST METHOD IS BELOW   #
             #                                                                     #
-            # [status]          ->  true (Başarılı) | false (Başarısız)           #
-            # [order_id]        ->  string | Sipariş Numarası                     #
-            # [merchant_id]     ->  string | Müşteri ID                           #
-            # [amount]          ->  int    | Ödeme Miktarı                        #
-            # [ExtraInfo]       ->  string | Kullanıcı Adı veya herhangi bir veri #
-            # [hash]            ->  string | Kontrol amaçlı şifrelenmiş özel veri #
+            # [status]          ->  true (Success) | false (Failed)               #
+            # [order_id]        ->  string | Order Number                         #
+            # [merchant_id]     ->  string | Merchant ID                          #
+            # [amount]          ->  int    | Payment Amount                       #
+            # [ExtraInfo]       ->  string | Username or any data                 #
+            # [hash]            ->  string | Encrypted special data for control   #
             #######################################################################
 
-            // Kredi verme işlemlerini burada gerçekleştirebilirsiniz
-            // Örnek olarak verilen kodlar sadece bir örnek olup, kendi sistemlerinize göre düzenlemeniz gerekmektedir
+            // You can perform the crediting process here
+            // The example code below is just a sample, you should adapt it to your own system
 
-            echo "OK"; // Bu kodu silmeyin, aksi takdirde ödeme işlemi başarısız olarak işaretlenir
+            echo "OK"; // Do not remove this code, otherwise the payment will be marked as failed
         } else {
-            // Ödeme başarısız ise yine "OK" mesajı gönderiyoruz
+            // If payment failed, still send "OK" message
             echo "OK";
         }
     } else {
-        // Hash değerleri eşleşmiyorsa yine "OK" mesajı gönderiyoruz
+        // If hash values do not match, still send "OK" message
         echo "OK";
     }
 } else {
-    // Gelen POST isteği parametreleri eksikse yine "OK" mesajı gönderiyoruz
+    // If POST request parameters are missing, still send "OK" message
     echo "OK";
 }
